@@ -1,1 +1,79 @@
-
+#include <stdio.h>
+#include <stdlib.h>
+struct node {
+ int data;
+ int priority;
+ struct node *link;
+};
+typedef struct node* NODE;
+NODE getnode(int val, int pri) {
+ NODE x = (NODE)malloc(sizeof(struct node));
+ if (x == NULL) {
+ printf("Out of memory!\n");
+ exit(0);
+ }
+ x->data = val;
+ x->priority = pri;
+ x->link = NULL;
+ return x;
+}
+NODE insert_priority(NODE first) {
+ int val, pri;
+ printf("Enter value: ");
+ scanf("%d", &val);
+ printf("Enter priority: ");
+ scanf("%d", &pri);
+ NODE temp = getnode(val, pri);
+ if (first == NULL || pri < first->priority) {
+ temp->link = first;
+ return temp;
+ }
+ NODE cur = first;
+ while (cur->link != NULL && cur->link->priority <= pri) {
+ cur = cur->link;
+ }
+ temp->link = cur->link;
+ cur->link = temp;
+ return first;
+}
+NODE delete_node(NODE first) {
+ if (first == NULL) {
+ printf("Queue Underflow!\n");
+ return NULL;
+ }
+ NODE temp = first;
+ printf("Deleted item: %d (priority=%d)\n", temp->data, temp->priority);
+ first = first->link;
+ free(temp);
+ return first;
+}
+void display(NODE first) {
+ if (first == NULL) {
+ printf("Queue is empty!\n");
+ return;
+ }
+ printf("Priority Queue contents:\n");
+ NODE temp = first;
+ while (temp != NULL) {
+ printf("%d [priority=%d]\n", temp->data, temp->priority);
+ temp = temp->link;
+ }
+}
+int main() {
+ NODE first = NULL;
+ int option;
+ do {
+ printf("\n--- PRIORITY QUEUE MENU ---\n");
+ printf("1. Insert\n2. Delete\n3. Display\n4. Exit\n");
+ printf("Enter your choice: ");
+ scanf("%d", &option);
+ switch (option) {
+ case 1: first = insert_priority(first); break;
+ case 2: first = delete_node(first); break;
+ case 3: display(first); break;
+ case 4: exit(0);
+ default: printf("Invalid choice!\n");
+ }
+ } while (1);
+ return 0;
+}
