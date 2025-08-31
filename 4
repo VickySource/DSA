@@ -1,1 +1,114 @@
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+struct node {
+char data[20];
+struct node *link;
+};
+typedef struct node* NODE;
+NODE getnode(char str[]) {
+NODE temp = (NODE)malloc(sizeof(struct node));
+if (temp == NULL) {
+printf("Memory not available\n");
+exit(0);
+}
+strcpy(temp->data, str);
+temp->link = temp;
+return temp;
+}
+NODE insert_front(NODE last, char str[]) {
+NODE temp = getnode(str);
+if (last == NULL) return temp;
+temp->link = last->link;
+last->link = temp;
+return last;
+}
+NODE insert_rear(NODE last, char str[]) {
+NODE temp = getnode(str);
+if (last == NULL) return temp;
+temp->link = last->link;
+last->link = temp;
+return temp; // new last
+}
+NODE delete_front(NODE last) {
+if (last == NULL) {
+printf("List empty\n");
+return NULL;
+}
+NODE first = last->link;
+if (first == last) {
+printf("Deleted: %s\n", first->data);
+free(first);
+return NULL;
+}
+last->link = first->link;
+printf("Deleted: %s\n", first->data);
+free(first);
+return last;
+}
+NODE delete_rear(NODE last) {
+if (last == NULL) {
+printf("List empty\n");
+return NULL;
+}
+if (last->link == last) {
+printf("Deleted: %s\n", last->data);
+free(last);
+return NULL;
+}
+NODE cur = last->link;
+while (cur->link != last) cur = cur->link;
+cur->link = last->link;
+printf("Deleted: %s\n", last->data);
+free(last);
+return cur; // new last
+}
+void count_nodes(NODE last) {
+if (last == NULL) {
+printf("List empty\n");
+return;
+}
+int count = 1;
+NODE cur = last->link;
+while (cur != last) {
+count++;
+cur = cur->link;
+}
+printf("No. of nodes = %d\n", count);
+}
+void display(NODE last) {
+if (last == NULL) {
+printf("List empty\n");
+return;
+}
+NODE cur = last->link;
+printf("CLL contents: ");
+while (cur != last) {
+printf("%s -> ", cur->data);
+cur = cur->link;
+}
+printf("%s -> (back to start)\n", cur->data);
+}
+int main() {
+NODE last = NULL;
+int choice;
+char str[20];
+while (1) {
+printf("\n1.Insert Front\n2.Insert Rear\n3.Delete Front\n4.Delete Rear\n");
+printf("5.Count Nodes\n6.Display\n7.Exit\n");
+printf("Enter choice: ");
+scanf("%d", &choice);
+switch (choice) {
+case 1: printf("Enter data: "); scanf("%s", str);
+last = insert_front(last, str); break;
+case 2: printf("Enter data: "); scanf("%s", str);
+last = insert_rear(last, str); break;
+case 3: last = delete_front(last); break;
+case 4: last = delete_rear(last); break;
+case 5: count_nodes(last); break;
+case 6: display(last); break;
+case 7: exit(0);
+default: printf("Invalid choice!\n");
+}
+}
+}
