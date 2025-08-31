@@ -1,1 +1,86 @@
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define QS 5
+// Node structure
+struct node {
+char info[20];
+struct node *link;
+};
+typedef struct node* NODE;
+// Insert at rear
+NODE insert_rear(char item[], NODE front, NODE *rear) {
+NODE temp = (NODE)malloc(sizeof(struct node));
+if (temp == NULL) {
+printf("Out of memory!\n");
+return front;
+}
+strcpy(temp->info, item);
+temp->link = NULL;
+if (front == NULL) { // queue empty
+front = temp;
+} else {
+(*rear)->link = temp;
+}
+*rear = temp;
+printf("Inserted: %s\n", item);
+return front;
+}
+// Delete from front
+NODE delete_front(NODE front, NODE *rear) {
+if (front == NULL) {
+printf("Queue is empty! Deletion not possible.\n");
+return NULL;
+}
+NODE temp = front;
+printf("Deleted: %s\n", temp->info);
+front = front->link;
+if (front == NULL) // queue became empty
+*rear = NULL;
+free(temp);
+return front;
+}
+// Display queue
+void display(NODE front) {
+if (front == NULL) {
+printf("Queue is empty!\n");
+return;
+}
+NODE temp = front;
+printf("Queue contents:\n");
+while (temp != NULL) {
+printf("%s\n", temp->info);
+temp = temp->link;
+}
+}int main() {
+NODE front = NULL, rear = NULL;
+int choice;
+char item[20];
+while (1) {
+printf("\n******** MENU ********\n");
+printf("1. Insert into Queue\n");
+printf("2. Delete from Queue\n");
+printf("3. Display Queue\n");
+printf("4. Exit\n");
+printf("Enter your choice: ");
+scanf("%d", &choice);
+switch (choice) {
+case 1:
+printf("Enter string to insert: ");
+scanf("%s", item);
+front = insert_rear(item, front, &rear);
+break;
+case 2:
+front = delete_front(front, &rear);
+break;
+case 3:
+display(front);
+break;
+case 4:
+exit(0);
+default:
+printf("Invalid choice! Try again.\n");
+}
+}
+return 0;
+}
