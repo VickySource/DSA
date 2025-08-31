@@ -1,1 +1,114 @@
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+struct node {
+int BOOK_ID;
+char BOOK_TITLE[20];
+char AUTHOR[30];
+char EDITION[5];
+struct node *llink, *rlink;
+};
+typedef struct node* NODE;
+NODE getnode() {
+NODE x = (NODE)malloc(sizeof(struct node));
+if (x == NULL) {
+printf("Out of memory!\n");
+exit(0);
+}
+printf("\nEnter BOOK_ID: "); scanf("%d", &x->BOOK_ID);
+printf("Enter BOOK_TITLE: "); scanf("%s", x->BOOK_TITLE);
+printf("Enter AUTHOR: "); scanf("%s", x->AUTHOR);
+printf("Enter EDITION: "); scanf("%s", x->EDITION);
+x->llink = x->rlink = NULL;
+return x;
+}
+NODE insert_rear(NODE first) {
+NODE temp = getnode(), cur;
+if (first == NULL) return temp;
+cur = first;
+while (cur->rlink) cur = cur->rlink;
+cur->rlink = temp;
+temp->llink = cur;
+return first;
+}
+NODE insert_front(NODE first) {
+NODE temp = getnode();
+if (first == NULL) return temp;
+temp->rlink = first;
+first->llink = temp;
+return temp;
+}
+void count_nodes(NODE first) {
+int count = 0;
+NODE cur = first;
+while (cur) {
+count++;
+cur = cur->rlink;
+}
+printf("\nNumber of nodes = %d\n", count);
+}
+NODE del_rear(NODE first) {
+if (first == NULL) {
+printf("\nList is Empty\n");
+return NULL;
+}
+NODE cur = first;
+while (cur->rlink) cur = cur->rlink; // last node
+printf("\nDeleted BOOK_ID=%d, TITLE=%s\n", cur->BOOK_ID, cur->BOOK_TITLE);
+if (cur->llink) cur->llink->rlink = NULL;
+else first = NULL; // list becomes empty
+free(cur);
+return first;
+}
+NODE del_front(NODE first) {
+if (first == NULL) {
+printf("\nList is Empty\n");
+return NULL;
+}
+NODE cur = first;
+printf("\nDeleted BOOK_ID=%d, TITLE=%s\n", cur->BOOK_ID, cur->BOOK_TITLE);
+first = cur->rlink;
+if (first) first->llink = NULL;
+free(cur);
+return first;
+}
+void display(NODE first) {
+if (first == NULL) {
+printf("\nList is Empty\n");
+return;
+}
+printf("\n--- Library Book List ---\n");
+for (NODE temp = first; temp; temp = temp->rlink) {
+printf("BOOK_ID: %d\n", temp->BOOK_ID);
+printf("TITLE : %s\n", temp->BOOK_TITLE);
+printf("AUTHOR : %s\n", temp->AUTHOR);
+printf("EDITION: %s\n\n", temp->EDITION);
+}
+}
+int main() {
+NODE first = NULL;
+int choice;
+while (1) {
+printf("\n********* MENU *********\n");
+printf("1. Insert Rear\n");
+printf("2. Insert Front\n");
+printf("3. Count Nodes\n");
+printf("4. Delete Rear\n");
+printf("5. Delete Front\n");
+printf("6. Display\n");
+printf("7. Exit\n");
+printf("Enter your choice: ");
+scanf("%d", &choice);
+switch (choice) {
+case 1: first = insert_rear(first); break;
+case 2: first = insert_front(first); break;
+case 3: count_nodes(first); break;
+case 4: first = del_rear(first); break;
+case 5: first = del_front(first); break;
+case 6: display(first); break;
+case 7: exit(0);
+default: printf("Invalid choice!\n");
+}
+}
+return 0;
+}
